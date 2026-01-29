@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="puzzlebot">
+
+    <xacro:include filename="$(find puzzlebot_description)/urdf/xacros/chassis.xacro" />
+    <xacro:include filename="$(find puzzlebot_description)/urdf/xacros/gazebo_plugins.xacro" />
+    <xacro:include filename="$(find puzzlebot_description)/urdf/xacros/geometric_primitives.xacro" />
+    <xacro:include filename="$(find puzzlebot_description)/urdf/xacros/wheels.xacro" />
+
+
+    <!-- Get the current puzzlebot model -->
+    <xacro:arg name="model" default="$(env PUZZLEBOT_MODEL)" />
+
+    <!-- Chassis -->
+    <link name="base_link" />
+    <xacro:chassis_link model="$(arg model)" />
+
+    <xacro:fixed_joint parent="base_link" child="chassis_link" x="-0.052593" z="0.022" />
+
+    <!-- Wheels -->
+    <xacro:wheel_link link_name="wheel_right_link" />
+    <xacro:wheel_link link_name="wheel_left_link" R="${radians(180)}" />
+
+    <joint name="wheel_right_joint" type="continuous">
+        <parent link="chassis_link" />
+        <child link="wheel_right_link" />
+        <axis xyz="0 0 -1" />
+        <origin xyz="0.052557 -0.091903 0.022416" rpy="${radians(90)} 0 0" />
+        <limit effort="1000.0" velocity="100.0" />
+        <dynamics damping="0.0" friction="0.1" />
+    </joint>
+
+    <joint name="wheel_left_joint" type="continuous">
+        <parent link="chassis_link" />
+        <child link="wheel_left_link" />
+        <axis xyz="0 0 -1" />
+        <origin xyz="0.052557 0.091903 0.022416" rpy="${radians(90)} 0 0" />
+        <limit effort="1000.0" velocity="100.0" />
+        <dynamics damping="0.0" friction="0.1" />
+    </joint>
+
+    <!-- Caster wheel -->
+    <xacro:caster_wheel />
+    <xacro:fixed_joint parent="chassis_link" child="caster_wheel_support" x="-0.095" z="-0.0025" />
+
+    <!-- Differential Drive Controller -->
+    <xacro:diff_drive_controller />
+
+    <xacro:if value="${'$(arg model)' != 'drive'}">
+        <!-- Camera-->
+        <xacro:camera R="${radians(90)}" Y="${radians(90)}" />
+        <xacro:fixed_joint parent="chassis_link" child="camera_link" x="0.10" z=".070064" />
+
+        <link name="camera_frame" />
+        <xacro:fixed_joint parent="camera_link" child="camera_frame" x="0.024" z="0.008" />
+        <xacro:camera_plugin />
+    </xacro:if>
+
+    <xacro:if value="${'$(arg model)' == 'perception'}">
+        <!-- Lidar -->
+        <xacro:lidar Y="${radians(180)}" />
+        <xacro:fixed_joint parent="chassis_link" child="lidar_link" x="0.04909" z="0.12" />
+
+        <link name="lidar_frame" />
+        <xacro:fixed_joint parent="lidar_link" child="lidar_frame" z="0.010" />
+
+        <xacro:lidar_plugin />
+    </xacro:if>
+
+
+</robot>

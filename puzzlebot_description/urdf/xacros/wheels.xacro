@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Puzzlebot wheels: drive wheels and caster wheel -->
+
+    <!-- Macro: wheel - Real drive wheel -->
+    <xacro:macro name="wheel_link" params="link_name R:=0 P:=0 Y:=0">
+
+        <xacro:property name="radius" value="${0.093342/2}" />
+        <xacro:property name="length" value="0.012" />
+        <xacro:property name="mass" value="0.050" />
+
+        <link name="${link_name}">
+            <xacro:mesh
+                filename="package://puzzlebot_description/meshes/wheel.dae"
+                R="${R}" P="${P}" Y="${Y}" />
+            <xacro:collision_cylinder radius="${radius}" length="${length}" R="${R}" P="${P}"
+                Y="${Y}" />
+            <xacro:inertial_cylinder radius="${radius}" length="${length}" mass="${mass}" R="${R}"
+                P="${P}" Y="${Y}" />
+        </link>
+
+        <gazebo reference="${link_name}">
+            <kp>1000000000000000000000000000.0</kp>
+            <kd>1000000000000000000000000000.0</kd>
+            <mu1>0.5</mu1>
+            <mu2>0.5</mu2>
+        </gazebo>
+
+    </xacro:macro>
+
+    <!-- Macro: caster_wheel - caster wheel (singleton) -->
+    <xacro:macro name="caster_wheel">
+
+        <!-- Note: Attach 'caster_wheel_support' to the chassis link -->
+        <xacro:property name="width" value="0.017516" />
+        <xacro:property name="depth" value="0.023014" />
+        <xacro:property name="height" value="0.021365" />
+        <xacro:property name="mass" value="0.010" />
+
+        <link name="caster_wheel_support">
+            <xacro:mesh
+                filename="package://puzzlebot_description/meshes/caster_wheel_support.dae"
+            />
+            <xacro:collision_box width="${width}" depth="${depth}" height="${height}"
+                z="-${height/2}" />
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}" mass="${mass}"
+                z="-${height/2}" />
+        </link>
+
+        <!-- Caster yaw axis (vertical rotation) -->
+        <xacro:link_sphere radius="${0.013/2}" link_name="caster_wheel_yaw" color="Blue" mass="0.01" />
+
+        <joint name="caster_wheel_yaw_joint" type="continuous">
+            <parent link="caster_wheel_support" />
+            <child link="caster_wheel_yaw" />
+            <axis xyz="0 0 1" />
+            <origin xyz="0 0 -0.0165" rpy="0 0 0" />
+            <limit effort="1000.0" velocity="100.0" />
+            <dynamics damping="0.0" friction="0.1" />
+        </joint>
+
+        <gazebo reference="caster_wheel_yaw">
+            <kp>1000000000000000000000000000.0</kp>
+            <kd>1000000000000000000000000000.0</kd>
+            <mu1>0.25</mu1>
+            <mu2>0.25</mu2>
+            <material>Puzzlebot/Metal</material>
+        </gazebo>
+
+        <!-- Caster roll axis (wheel rotation) -->
+        <xacro:link_cylinder radius="${0.013/2}" length="0.005" link_name="caster_wheel_roll"
+            color="Red" mass="0.01" R="${radians(90)}" />
+
+        <joint name="caster_wheel_roll_joint" type="continuous">
+            <parent link="caster_wheel_yaw" />
+            <child link="caster_wheel_roll" />
+            <axis xyz="1 0 0" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <limit effort="1000.0" velocity="100.0" />
+            <dynamics damping="0.0" friction="0.1" />
+        </joint>
+
+        <gazebo reference="caster_wheel_roll">
+            <kp>1000000000000000000000000000.0</kp>
+            <kd>1000000000000000000000000000.0</kd>
+            <mu1>0.25</mu1>
+            <mu2>0.25</mu2>
+            <material>Puzzlebot/Metal</material>
+        </gazebo>
+
+        <!-- Caster pitch axis (tilt rotation) -->
+        <xacro:link_cylinder radius="${0.013/2}" length="0.005" link_name="caster_wheel_pitch"
+            color="Green" mass="0.01" P="${radians(90)}" />
+
+        <joint name="caster_wheel_pitch_joint" type="continuous">
+            <parent link="caster_wheel_roll" />
+            <child link="caster_wheel_pitch" />
+            <axis xyz="0 1 0" />
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <limit effort="1000.0" velocity="100.0" />
+            <dynamics damping="0.0" friction="0.1" />
+        </joint>
+
+        <gazebo reference="caster_wheel_pitch">
+            <kp>1000000000000000000000000000.0</kp>
+            <kd>1000000000000000000000000000.0</kd>
+            <mu1>0.25</mu1>
+            <mu2>0.25</mu2>
+            <material>Puzzlebot/Metal</material>
+        </gazebo>
+
+    </xacro:macro>
+
+</robot>

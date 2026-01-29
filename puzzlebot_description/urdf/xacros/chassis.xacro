@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- CHASSIS MACROS (highly recommended to NOT modify)-->
+
+    <!-- Chassis: Inclue chassis plates and micro-controllers (embedded in mesh file) -->
+    <xacro:macro name="chassis_link" params="model">
+
+        <!-- Define default properties and variables for a drive/vision model -->
+        <xacro:property name="width" value="0.198665" />
+        <xacro:property name="depth" value="0.16" />
+        <xacro:property name="height" value="0.087739" />
+        <xacro:property name="z_offset" value="0.041451" />
+        <xacro:property name="mass" value="1.5" />
+        <xacro:property name="mesh" value="chassis.dae" />
+
+        <!-- Override variables if necessary -->
+        <xacro:if value="${model == 'perception'}">
+            <xacro:property name="width" value="0.198665" />
+            <xacro:property name="depth" value="0.16" />
+            <xacro:property name="height" value="0.095739" />
+            <xacro:property name="z_offset" value="0.045451" />
+            <xacro:property name="mass" value="1.8" />
+            <xacro:property name="mesh" value="complete_chassis.dae" />
+        </xacro:if>
+
+        <!-- The link is named with a fixed value -->
+        <link name="chassis_link">
+            <xacro:collision_box width="${width}" depth="${depth}" height="${height}"
+                z="${z_offset}" />
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}" z="${z_offset}"
+                mass="${mass}" />
+            <xacro:mesh filename="package://puzzlebot_description/meshes/chassis/${mesh}" />
+        </link>
+
+    </xacro:macro>
+
+
+    <!-- Camera:Defines the link and its properties for the camera object (visual and collision) -->
+    <xacro:macro name="camera" params="R:=0 P:=0 Y:=0">
+        <!-- The macro includes parameters to adjust object orientation -->
+
+        <!-- Properties (measured from physical camera) -->
+        <xacro:property name="width" value="0.0388" />
+        <xacro:property name="depth" value="0.0465" />
+        <xacro:property name="height" value="0.027" />
+        <xacro:property name="mass" value="0.050" />
+
+        <!-- The link is named with a fixed value -->
+        <link name="camera_link">
+            <xacro:mesh
+                filename="package://puzzlebot_description/meshes/camera.dae"
+                R="${R}" P="${P}" Y="${Y}" />
+            <xacro:collision_box width="${width}" depth="${depth}" height="${height}"
+                R="${R}" P="${P}" Y="${Y}" />
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}"
+                mass="${mass}" R="${R}" P="${P}" Y="${Y}" />
+        </link>
+
+    </xacro:macro>
+
+    <!-- Macro: lidar - Defines the link and its properties for the lidar object -->
+    <xacro:macro name="lidar" params="R:=0 P:=0 Y:=0">
+        <!-- The macro includes parameters to adjust object orientation -->
+
+        <!-- Properties (measured from physical LiDAR) -->
+        <xacro:property name="width" value="0.0968" />
+        <xacro:property name="depth" value="0.05" />
+        <xacro:property name="height" value="0.027" />
+        <xacro:property name="radius" value="0.034822" />
+        <xacro:property name="length" value="0.020" />
+        <xacro:property name="mass" value="0.200" />
+
+        <!-- The link is named with a fixed value-->
+        <link name="lidar_link">
+            <xacro:mesh
+                filename="package://puzzlebot_description/meshes/lidar.dae"
+                R="${R}" P="${P}" Y="${Y}" />
+            <xacro:collision_box width="${width}" depth="${depth}" height="${height}"
+                x="-0.014378" z="-0.015" R="${R}" P="${P}" Y="${Y}" />
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}"
+                mass="${mass/2}" x="-0.014378" z="-0.015" R="${R}" P="${P}" Y="${Y}" />
+            <xacro:collision_cylinder radius="${radius}" length="${length}"
+                z="0.010" R="${R}" P="${P}" Y="${Y}" />
+            <xacro:inertial_cylinder radius="${radius}" length="${length}"
+                mass="${mass/2}" z="0.010" R="${R}" P="${P}" Y="${Y}" />
+        </link>
+
+    </xacro:macro>
+
+</robot>

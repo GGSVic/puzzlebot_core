@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>puzzlebot_bringup</name>
+  <version>1.1.1</version>
+  <description>Bringup package: Inlcudes all launch files to set up Puzzlebot environment</description>
+  <maintainer email="vicosmor932@outlook.com">seags</maintainer>
+  <license>Apache-2.0</license>
+  <author>Victor Manuel Vazquez Morales</author>
+
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>puzzlebot_description</exec_depend>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

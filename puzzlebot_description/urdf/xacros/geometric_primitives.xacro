@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Rviz materials -->
+
+    <material name="Blue">
+        <color rgba="0.0 0.0 1.0 1.0" />
+    </material>
+
+    <material name="Red">
+        <color rgba="1.0 0.0 0.0 1.0" />
+    </material>
+
+    <material name="Green">
+        <color rgba="0.0 1.0 0.0 1.0" />
+    </material>
+    <!--
+        Description: Geometric primitive macros for building robot links.
+        Provides visual, collision, inertial, and complete link macros for common shapes.
+    -->
+
+    <!--=============================================================================-->
+    <!-- BOX PRIMITIVES                                                              -->
+    <!--=============================================================================-->
+
+    <!-- Macro: box - Geometry element only -->
+    <xacro:macro name="box" params="width depth height">
+        <geometry>
+            <box size="${width} ${depth} ${height}" />
+        </geometry>
+    </xacro:macro>
+
+    <!-- Macro: visual_box - Visual element with color and optional pose -->
+    <xacro:macro name="visual_box" params="width depth height color x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <visual>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <xacro:box width="${width}" depth="${depth}" height="${height}" />
+            <material name="${color}" />
+        </visual>
+    </xacro:macro>
+
+    <!-- Macro: collision_box - Collision element with optional pose -->
+    <xacro:macro name="collision_box" params="width depth height x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <collision>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <xacro:box width="${width}" depth="${depth}" height="${height}" />
+        </collision>
+    </xacro:macro>
+
+    <!-- Macro: inertial_box - Inertial element with computed inertia tensor -->
+    <xacro:macro name="inertial_box" params="width depth height mass x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <inertial>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <mass value="${mass}" />
+            <inertia ixx="${(mass * (depth * depth + height * height)) / 12}" ixy="0.0" ixz="0.0"
+                iyy="${(mass * (width * width + height * height)) / 12}" iyz="0.0"
+                izz="${(mass * (width * width + depth * depth)) / 12}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- Macro: link_box - Complete link with visual, collision, and inertial -->
+    <xacro:macro name="link_box"
+        params="link_name width depth height color mass x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <link name="${link_name}">
+            <xacro:visual_box width="${width}" depth="${depth}" height="${height}" color="${color}"
+                x="${x}" y="${y}" z="${z}" R="${R}" P="${P}" Y="${Y}" />
+            <xacro:collision_box width="${width}" depth="${depth}" height="${height}" x="${x}"
+                y="${y}"
+                z="${z}" R="${R}" P="${P}" Y="${Y}" />
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}" mass="${mass}"
+                x="${x}" y="${y}" z="${z}" R="${R}" P="${P}" Y="${Y}" />
+        </link>
+    </xacro:macro>
+
+    <!--=============================================================================-->
+    <!-- CYLINDER PRIMITIVES                                                         -->
+    <!--=============================================================================-->
+
+    <!-- Macro: cylinder - Geometry element only -->
+    <xacro:macro name="cylinder" params="radius length">
+        <geometry>
+            <cylinder radius="${radius}" length="${length}" />
+        </geometry>
+    </xacro:macro>
+
+    <!-- Macro: visual_cylinder - Visual element with color and optional pose -->
+    <xacro:macro name="visual_cylinder" params="radius length color x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <visual>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <xacro:cylinder radius="${radius}" length="${length}" />
+            <material name="${color}" />
+        </visual>
+    </xacro:macro>
+
+    <!-- Macro: collision_cylinder - Collision element with optional pose -->
+    <xacro:macro name="collision_cylinder" params="radius length x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <collision>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <xacro:cylinder radius="${radius}" length="${length}" />
+        </collision>
+    </xacro:macro>
+
+    <!-- Macro: inertial_cylinder - Inertial element with computed inertia tensor -->
+    <xacro:macro name="inertial_cylinder" params="radius length mass x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <inertial>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <mass value="${mass}" />
+            <inertia ixx="${mass * ( (radius * radius) / 4 + (length * length) / 12 )}" ixy="0.0"
+                ixz="0.0" iyy="${mass * ( (radius * radius) / 4 + (length * length) / 12 )}"
+                iyz="0.0" izz="${(mass * radius * radius) / 2}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- Macro: link_cylinder - Complete link with visual, collision, and inertial -->
+    <xacro:macro name="link_cylinder"
+        params="link_name radius length color mass x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <link name="${link_name}">
+            <xacro:visual_cylinder radius="${radius}" length="${length}" color="${color}" x="${x}"
+                y="${y}" z="${z}" R="${R}" P="${P}" Y="${Y}" />
+            <xacro:collision_cylinder radius="${radius}" length="${length}" x="${x}" y="${y}"
+                z="${z}"
+                R="${R}" P="${P}" Y="${Y}" />
+            <xacro:inertial_cylinder radius="${radius}" length="${length}" mass="${mass}" x="${x}"
+                y="${y}" z="${z}" R="${R}" P="${P}" Y="${Y}" />
+        </link>
+    </xacro:macro>
+
+    <!--=============================================================================-->
+    <!-- SPHERE PRIMITIVES                                                           -->
+    <!--=============================================================================-->
+
+    <!-- Macro: sphere - Geometry element only -->
+    <xacro:macro name="sphere" params="radius">
+        <geometry>
+            <sphere radius="${radius}" />
+        </geometry>
+    </xacro:macro>
+
+    <!-- Macro: visual_sphere - Visual element with color and optional pose -->
+    <xacro:macro name="visual_sphere" params="radius color x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <visual>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <xacro:sphere radius="${radius}" />
+            <material name="${color}" />
+        </visual>
+    </xacro:macro>
+
+    <!-- Macro: collision_sphere - Collision element with optional pose -->
+    <xacro:macro name="collision_sphere" params="radius x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <collision>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <xacro:sphere radius="${radius}" />
+        </collision>
+    </xacro:macro>
+
+    <!-- Macro: inertial_sphere - Inertial element with computed inertia tensor -->
+    <xacro:macro name="inertial_sphere" params="radius mass x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <inertial>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <mass value="${mass}" />
+            <inertia ixx="${2 / 5 * (mass * radius * radius)}" ixy="0.0" ixz="0.0"
+                iyy="${2 / 5 * (mass * radius * radius)}" iyz="0.0"
+                izz="${2 / 5 * (mass * radius * radius)}" />
+        </inertial>
+    </xacro:macro>
+
+    <!-- Macro: link_sphere - Complete link with visual, collision, and inertial -->
+    <xacro:macro name="link_sphere"
+        params="link_name radius color mass x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <link name="${link_name}">
+            <xacro:visual_sphere radius="${radius}" color="${color}" x="${x}" y="${y}" z="${z}"
+                R="${R}"
+                P="${P}" Y="${Y}" />
+            <xacro:collision_sphere radius="${radius}" x="${x}" y="${y}" z="${z}" R="${R}" P="${P}"
+                Y="${Y}" />
+            <xacro:inertial_sphere radius="${radius}" mass="${mass}" x="${x}" y="${y}" z="${z}"
+                R="${R}"
+                P="${P}" Y="${Y}" />
+        </link>
+    </xacro:macro>
+
+    <!--=============================================================================-->
+    <!-- MESH UTILITIES                                                              -->
+    <!--=============================================================================-->
+
+    <!--
+        Macro: mesh - Visual element from mesh file, optionally includes collision
+        Params:
+            filename - mesh file URI (e.g., package://...)
+            include_collision - 'true' to add collision (default: 'false')
+            color - material name (default: 'Grey')
+            scale - mesh scale vector (default: '1 1 1')
+            x,y,z,R,P,Y - optional pose offsets
+        Example: <xacro:mesh filename="package://.../model.dae" color="Wood" include_collision="true"/>
+        Note: Prefer primitive shapes for collision when possible for better physics performance.
+    -->
+    <xacro:macro name="mesh"
+        params="filename include_collision:='false' color:='Grey' scale:='1 1 1' x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <visual>
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <geometry>
+                <mesh filename="${filename}" scale="${scale}" />
+            </geometry>
+        </visual>
+        <xacro:if value="${include_collision}">
+            <collision>
+                <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+                <geometry>
+                    <mesh filename="${filename}" scale="${scale}" />
+                </geometry>
+            </collision>
+        </xacro:if>
+    </xacro:macro>
+
+    <!--=============================================================================-->
+    <!-- JOINT UTILITIES                                                              -->
+    <!--=============================================================================-->
+
+    <!--
+        Macro: fixed_joint - Rigid connection between two links
+        Params:
+            parent, child - link names to connect
+            x, y, z, R, P, Y - optional pose offset (default: 0)
+        Example: <xacro:fixed_joint parent="base_link" child="sensor_link" z="0.1"/>
+    -->
+    <xacro:macro name="fixed_joint" params="parent child x:=0 y:=0 z:=0 R:=0 P:=0 Y:=0">
+        <joint name="${child}_joint" type="fixed">
+            <origin xyz="${x} ${y} ${z}" rpy="${R} ${P} ${Y}" />
+            <parent link="${parent}" />
+            <child link="${child}" />
+        </joint>
+    </xacro:macro>
+
+
+</robot>
