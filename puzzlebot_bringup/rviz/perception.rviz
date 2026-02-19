@@ -61,7 +61,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /puzzlebot/robot_description
+        Value: /robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -446,7 +446,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /puzzlebot/odom
+        Value: /odom
       Value: true
     - Class: rviz_default_plugins/Image
       Enabled: true
@@ -460,7 +460,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /puzzlebot/camera/image_raw
+        Value: /camera/image_raw
       Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
@@ -492,7 +492,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /puzzlebot/scan
+        Value: /scan
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
