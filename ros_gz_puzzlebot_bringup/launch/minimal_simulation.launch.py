@@ -7,7 +7,7 @@ from launch.substitutions import PathJoinSubstitution, PythonExpression
 
 def generate_launch_description():
 
-    # World file
+    # Build the path to the world file. A customized world is necessary to load the sensor plugins
     world_path = PathJoinSubstitution(
         [
             FindPackageShare("ros_gz_puzzlebot_bringup"), 
@@ -16,7 +16,7 @@ def generate_launch_description():
         ]
     )
 
-    # Launch gazebo with the default empty world
+    # Launch gazebo with the empty world
     gazebo_launcher = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution(
@@ -54,5 +54,4 @@ def generate_launch_description():
         )
     )
     
-
     return LaunchDescription([gazebo_launcher, spawner, joint_state_publisher])

@@ -8,7 +8,7 @@ This repository includes the description and bringup packages for the **Puzzlebo
 
 ## Prerequisites
 - **ROS 2:** Humble  
-- **Simulator:** Gazebo Classic  
+- **Simulator:** Gazebo Ignition Fortress  
 
 ---
 
@@ -20,19 +20,25 @@ Installing this package is quite simple. You only need to clone this repository 
 cd ~/ros2_ws/src
 
 # Clone the repository
-git clone [https://github.com/GGSVic/puzzlebot_core.git](https://github.com/GGSVic/puzzlebot_core.git) puzzlebot
-
+git clone  https://github.com/GGSVic/puzzlebot_core.git puzzlebot
+# Change to ignition branch
+cd puzzlebot
+git checkout ign-sim
 # Install dependencies and build
-cd ..
+cd ../../
 rosdep install --from-paths src --ignore-src -r -y
-colcon build --packages-select puzzlebot_gazebo puzzlebot_bringup
+colcon build --packages-select ros_gz_puzzlebot_description ros_gz_puzzlebot_bringup
 ```
 ---
 ### How to use
 
-The bringup package includes two launch files: `rviz2.launch.py` and `state_publisher.launch.py`. You need to run both of them to visualize the model properly in your ROS 2 environment. Of course, you have to source your workspace, which will allow you to set an important environment variable in your system: PUZZLEBOT_MODEL.
+The bringup package includes three launch files: 
 
-You can change between three types of models:
+* `state_publisher.launch.py`:  Launches the ***robot_state_publisher*** node with the urdf file as an argument and its corresponding ***RVIZ*** visualization. 
+* `spawn_puzzlebot.launch.py`: Reusable launch file that allows the user to spawn a puzzlebot within a Gazebo world simulation using the ***spawn_entity.py*** node. 
+* `minimal_simulation.launch.py`: Designed to test that everything is set up correctly. It launches an empty world and includes the launch files already described. 
+
+After sourcing the workspace where the packages are located, an important environment variable will appear in your system: ***PUZZLEBOT_MODEL***. You can change between three types of models:
 
 - `drive`: The simplest version. It includes a basic chassis and the corresponding wheels and plugins to move the robot.
 
@@ -42,22 +48,19 @@ You can change between three types of models:
 
 Depending on the model you want to use, you will need to set the variable properly (set as drive by default):
 
-#### Terminal 1: 
 ``` sh
+# Go to your workspace src folder
+cd ~/ros2_ws/src
+# Source the workspace
 source install/setup.bash
 export PUZZLEBOT_MODEL=drive # Options: drive, vision, perception
-ros2 launch puzzlebot_bringup state_publisher.launch.py
+ros2 launch ros_gz_puzzlebot_bringup minimal_simulation.launch.py
 ```
 
-#### Terminal 2: 
-``` sh
-source install/setup.bash
-ros2 launch puzzlebot_bringup rviz2.launch.py
-```
 
 ---
 ## Credits
-The robot is provided my [Manchester Robotics]( https://github.com/ManchesterRoboticsLtd) and the used meshes were originally extracted from its repository [puzzlebot_ros](https://github.com/ManchesterRoboticsLtd/puzzlebot_ros.git).
+The robot is provided by [Manchester Robotics]( https://github.com/ManchesterRoboticsLtd), and the used meshes were originally extracted from its repository [puzzlebot_ros](https://github.com/ManchesterRoboticsLtd/puzzlebot_ros.git).
 
 ---
 ## License
