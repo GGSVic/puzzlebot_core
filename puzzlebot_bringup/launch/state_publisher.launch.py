@@ -42,7 +42,7 @@ def generate_launch_description() -> LaunchDescription:
         output="screen",
     )
 
-    # Build absolute path to RViz configuration file
+    # Build path to RViz configuration file
     rviz_config_path = PathJoinSubstitution(
         [
             FindPackageShare("puzzlebot_bringup"),

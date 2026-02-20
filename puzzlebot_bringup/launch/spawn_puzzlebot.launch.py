@@ -6,6 +6,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
+    # Spawn entity node
     spawn_puzzlebot_node = Node(
         package="gazebo_ros",
         executable="spawn_entity.py",
@@ -13,7 +14,6 @@ def generate_launch_description():
         # fmt: off
         arguments=[
             "-entity", "puzzlebot",
-            #"-file", sdf_path, 
             "-topic", "/robot_description",
             "-x", LaunchConfiguration("x_pose"),
             "-y", LaunchConfiguration("y_pose"),

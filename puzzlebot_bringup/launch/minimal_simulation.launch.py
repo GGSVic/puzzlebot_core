@@ -6,6 +6,7 @@ from launch.substitutions import PathJoinSubstitution
 
 
 def generate_launch_description():
+
     # Launch gazebo with the default empty world
     gazebo_launcher = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
