@@ -12,7 +12,7 @@
 
         <link name="${link_name}">
             <xacro:mesh
-                filename="package://puzzlebot_description/meshes/wheel.dae"
+                filename="package://ros_gz_puzzlebot_description/meshes/wheel.dae"
                 R="${R}" P="${P}" Y="${Y}" />
             <xacro:collision_cylinder radius="${radius}" length="${length}" R="${R}" P="${P}"
                 Y="${Y}" />
@@ -40,7 +40,7 @@
 
         <link name="caster_wheel_support">
             <xacro:mesh
-                filename="package://puzzlebot_description/meshes/caster_wheel_support.dae"
+                filename="package://ros_gz_puzzlebot_description/meshes/caster_wheel_support.dae"
             />
             <xacro:collision_box width="${width}" depth="${depth}" height="${height}"
                 z="-${height/2}" />

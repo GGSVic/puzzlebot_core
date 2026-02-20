@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="puzzlebot">
 
-    <xacro:include filename="$(find puzzlebot_description)/urdf/xacros/chassis.xacro" />
-    <xacro:include filename="$(find puzzlebot_description)/urdf/xacros/gazebo_plugins.xacro" />
-    <xacro:include filename="$(find puzzlebot_description)/urdf/xacros/geometric_primitives.xacro" />
-    <xacro:include filename="$(find puzzlebot_description)/urdf/xacros/wheels.xacro" />
+    <xacro:include filename="$(find ros_gz_puzzlebot_description)/urdf/xacros/chassis.xacro" />
+    <xacro:include filename="$(find ros_gz_puzzlebot_description)/urdf/xacros/gazebo_plugins.xacro" />
+    <xacro:include filename="$(find ros_gz_puzzlebot_description)/urdf/xacros/geometric_primitives.xacro" />
+    <xacro:include filename="$(find ros_gz_puzzlebot_description)/urdf/xacros/wheels.xacro" />
 
 
     <!-- Get the current puzzlebot model -->

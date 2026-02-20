@@ -2,20 +2,15 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="puzzlebot">
 
     <xacro:property name="update_rate" value="60" />
-    <xacro:property name="namespace" value="puzzlebot" />
 
 
     <!-- Includes the differential drive controller and joint state publisher -->
     <xacro:macro name="diff_drive_controller">
         <!-- Differential Drive Controller -->
         <gazebo>
-            <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+            <plugin name="gz::sim::systems::DiffDrive" filename="gz-sim-diff-drive-system">
                 <!-- Update rate in Hertz -->
-                <update_rate>${update_rate}</update_rate>
-
-                <ros>
-                    <namespace>${namespace}</namespace>
-                </ros>
+                <odom_publisher_frequency>${update_rate}</odom_publisher_frequency>
 
                 <!-- wheels -->
                 <left_joint>wheel_left_joint</left_joint>
@@ -23,40 +18,28 @@
 
                 <!-- kinematics -->
                 <wheel_separation>0.179</wheel_separation>
-                <wheel_diameter>0.09334</wheel_diameter>
+                <wheel_radius>${0.09334/2}</wheel_radius>
 
                 <!-- limits -->
-                <max_wheel_acceleration>1.0</max_wheel_acceleration>
-                <max_wheel_torque>1.0</max_wheel_torque>
+                <max_linear_acceleration>1.0</max_linear_acceleration>
 
                 <!-- input -->
-                <command_topic>cmd_vel</command_topic>
+                <topic>cmd_vel</topic>
 
                 <!-- output -->
-                <publish_odom>true</publish_odom>
-                <publish_odom_tf>true</publish_odom_tf>
-                <publish_wheel_tr>false</publish_wheel_tr>
-                <publish_wheel_joint_state>false</publish_wheel_joint_state>
-                <odometry_source>0</odometry_source>
+                <odom_topic>odom</odom_topic>
+                <frame_id>odom</frame_id>
+                <child_frame_id>base_link</child_frame_id>
 
-                <odometry_topic>odom</odometry_topic>
-                <odometry_frame>odom</odometry_frame>
-                <robot_base_frame>base_link</robot_base_frame>
-
-                <legacy_mode>false</legacy_mode>
+                <tf_topic>/tf</tf_topic>
             </plugin>
         </gazebo>
 
         <!-- Joint State Publisher Plugin -->
         <gazebo>
-            <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+            <plugin name="gz::sim::systems::JointStatePublisher" filename="gz-sim-joint-state-publisher-system">
 
-                <ros>
-                    <namespace>${namespace}</namespace>
-                    <remapping>~/out:=joint_states</remapping>
-                </ros>
-                <!-- Update rate in Hertz -->
-                <update_rate>${update_rate}</update_rate>
+                <topic>joint_states</topic>
 
                 <joint_name>wheel_right_joint</joint_name>
                 <joint_name>wheel_left_joint</joint_name>
@@ -73,9 +56,12 @@
 
         <gazebo reference="camera_frame">
             <sensor name="rgb_camera" type="camera">
+                <always_on>true</always_on>
+                <topic>camera/image_raw</topic>
+                <visualize>true</visualize>
                 <update_rate>${update_rate}</update_rate>  <!-- Camera frame rate (Hz) -->
                 <camera name="rgb_camera">
-                    <always_on>true</always_on>
+                    <camera_info_topic>camera/camera_info</camera_info_topic>
                     <horizontal_fov>1.3962634</horizontal_fov>
                     <image>
                         <width>320</width>
@@ -99,13 +85,6 @@
                         <stddev>0.007</stddev>
                     </noise>
                 </camera>
-                <plugin name="rgb_camera_plugin" filename="libgazebo_ros_camera.so">
-                    <ros>
-                        <namespace>${namespace}</namespace>
-                    </ros>
-                    <camera_name>camera</camera_name>
-                    <frame_name>camera_frame</frame_name>
-                </plugin>
             </sensor>
         </gazebo>
     </xacro:macro>
@@ -113,33 +92,28 @@
     <!-- Lidar plugin -->
     <xacro:macro name="lidar_plugin">
         <gazebo reference="lidar_frame">
-            <sensor name="lidar_sensor" type="ray">
+            <sensor name="lidar_sensor" type="gpu_lidar">
                 <pose>0 0 0 0 0 0</pose>
-                <visualize>false</visualize>
-                <update_rate>${update_rate}</update_rate>
+                <visualize>true</visualize>
+                <update_rate>10</update_rate>
                 <always_on>true</always_on>
-                <ray>
+                <topic>scan</topic>
+                <gz_frame_id>lidar_frame</gz_frame_id>
+                <lidar>
                     <scan>
                         <horizontal>
-                            <samples>200</samples>
+                            <samples>360</samples>
                             <resolution>1.0</resolution>
                             <min_angle>-3.14</min_angle>
                             <max_angle>3.14</max_angle>
                         </horizontal>
                     </scan>
                     <range>
-                        <min>0.045</min>
-                        <max>5.0</max>
-                        <resolution>0.01</resolution>
+                        <min>0.15</min>
+                        <max>8.0</max>
+                        <resolution>0.1</resolution>
                     </range>
-                </ray>
-                <plugin name="laser" filename="libgazebo_ros_ray_sensor.so">
-                    <ros>
-                        <namespace>${namespace}</namespace>
-                        <remapping>~/out:=scan</remapping>
-                    </ros>
-                    <output_type>sensor_msgs/LaserScan</output_type>
-                </plugin>
+                </lidar>
             </sensor>
         </gazebo>
     </xacro:macro>

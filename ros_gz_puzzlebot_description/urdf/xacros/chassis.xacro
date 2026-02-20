@@ -30,7 +30,7 @@
                 z="${z_offset}" />
             <xacro:inertial_box width="${width}" depth="${depth}" height="${height}" z="${z_offset}"
                 mass="${mass}" />
-            <xacro:mesh filename="package://puzzlebot_description/meshes/chassis/${mesh}" />
+            <xacro:mesh filename="package://ros_gz_puzzlebot_description/meshes/chassis/${mesh}" />
         </link>
 
     </xacro:macro>
@@ -49,7 +49,7 @@
         <!-- The link is named with a fixed value -->
         <link name="camera_link">
             <xacro:mesh
-                filename="package://puzzlebot_description/meshes/camera.dae"
+                filename="package://ros_gz_puzzlebot_description/meshes/camera.dae"
                 R="${R}" P="${P}" Y="${Y}" />
             <xacro:collision_box width="${width}" depth="${depth}" height="${height}"
                 R="${R}" P="${P}" Y="${Y}" />
@@ -74,7 +74,7 @@
         <!-- The link is named with a fixed value-->
         <link name="lidar_link">
             <xacro:mesh
-                filename="package://puzzlebot_description/meshes/lidar.dae"
+                filename="package://ros_gz_puzzlebot_description/meshes/lidar.dae"
                 R="${R}" P="${P}" Y="${Y}" />
             <xacro:collision_box width="${width}" depth="${depth}" height="${height}"
                 x="-0.014378" z="-0.015" R="${R}" P="${P}" Y="${Y}" />
