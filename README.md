@@ -47,7 +47,7 @@ Depending on the model you want to use, you will need to set the variable proper
 
 ``` sh
 # Go to your workspace src folder
-cd ~/ros2_ws/src
+cd ~/ros2_ws
 # Source the workspace
 source install/setup.bash
 export PUZZLEBOT_MODEL=drive # Options: drive, vision, perception
