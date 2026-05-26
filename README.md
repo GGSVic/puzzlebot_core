@@ -8,7 +8,7 @@ This repository includes the description and bringup packages for the **Puzzlebo
 
 ## Prerequisites
 - **ROS 2:** Humble  
-- **Simulator:** Gazebo Ignition Fortress  
+- **Simulator:** Gazebo Sim  
 
 ---
 
@@ -20,12 +20,9 @@ Installing this package is quite simple. You only need to clone this repository 
 cd ~/ros2_ws/src
 
 # Clone the repository
-git clone  https://github.com/GGSVic/puzzlebot_core.git puzzlebot
-# Change to ignition branch
-cd puzzlebot
-git checkout ign-sim
+git clone -b gz-sim https://github.com/GGSVic/puzzlebot_core.git ros_gz_puzzlebot
 # Install dependencies and build
-cd ../../
+cd ../
 rosdep install --from-paths src --ignore-src -r -y
 colcon build --packages-select ros_gz_puzzlebot_description ros_gz_puzzlebot_bringup
 ```
