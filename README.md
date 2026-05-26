@@ -20,7 +20,7 @@ Installing this package is quite simple. You only need to clone this repository 
 cd ~/ros2_ws/src
 
 # Clone the repository
-git clone  https://github.com/GGSVic/puzzlebot_core.git puzzlebot
+git clone -b gz-classic https://github.com/GGSVic/puzzlebot_core.git puzzlebot
 
 # Install dependencies and build
 cd ..
@@ -48,7 +48,7 @@ Depending on the model you want to use, you will need to set the variable proper
 
 ``` sh
 # Go to your workspace src folder
-cd ~/ros2_ws/src
+cd ~/ros2_ws
 # Source the workspace
 source install/setup.bash
 export PUZZLEBOT_MODEL=drive # Options: drive, vision, perception
