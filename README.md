@@ -37,11 +37,16 @@ The bringup package includes three launch files:
 
 After sourcing the workspace where the packages are located, an important environment variable will appear in your system: ***PUZZLEBOT_MODEL***. You can change between three types of models:
 
-- `drive`: The simplest version. It includes a basic chassis and the corresponding wheels and plugins to move the robot.
+- `drive`: The simplest version. It includes a basic chassis and the corresponding wheels and plugins to move the robot (**default**).
 
 - `vision`: Expands the drive model by adding a functional camera.
 
 - `perception`: Includes both the camera and a LiDAR sensor for more advanced projects.
+
+#### Update: You can now use also a forklift as part of the model. Follow the instructions below to enable it. 
+
+Once the workspace is sourced, the variable ***INCLUDE_FORKLIFT*** will appear in your system. You can set it to `false` or `true`. The variable is set to `true` by default. 
+
 
 Depending on the model you want to use, you will need to set the variable properly (set as drive by default):
 
@@ -53,7 +58,52 @@ source install/setup.bash
 export PUZZLEBOT_MODEL=drive # Options: drive, vision, perception
 ros2 launch ros_gz_puzzlebot_bringup minimal_simulation.launch.py
 ```
+---
+### Forklift Support
 
+The Puzzlebot can optionally be equipped with a two-stage forklift attachment. After sourcing the workspace, the environment variable ***INCLUDE_FORKLIFT*** becomes available. You can choose between the following options:  
+
+- `true`: Spawn the robot with the forklift attachment.
+
+- `false`: Spawn the robot without the forklift.
+
+The forklift can be used with any available Puzzlebot model (drive, vision, or perception).
+
+**Note**:  The forklift attachment is currently available only in the Gazebo Sim (gz-sim) branch. The model was designed to provide a simple forklift-like mechanism for simulation and demonstration purposes. It is not intended to be a mechanically accurate representation of a real forklift, and therefore should not be used as a reference for mechanical design or dynamic analysis.
+
+---
+### Forklift Control
+
+The forklift is composed of two independently controlled stages:
+
+1. Inner mast position.
+2. Fork carriage position.
+
+Commands are sent through:
+
+```sh
+ros2 topic pub --once /forklift_controller/commands std_msgs/msg/Float64MultiArray "{data: [0.06, 0.08]}"
+```
+
+Where:
+
+```text
+data[0] -> Inner mast position (m)
+data[1] -> Fork carriage position (m)
+```
+
+#### Important Note
+
+The joint limits defined in the URDF are intentionally larger than the intended operating range of the mechanism. This is a workaround for a known Gazebo issue that may cause prismatic joints to become unresponsive when operating close to their declared limits.
+
+For this reason, users should avoid commanding positions near the URDF limits and instead operate the forklift within the following recommended ranges:
+
+```text
+Inner mast:     0.00 m - 0.06 m
+Fork carriage:  0.00 m - 0.08 m
+```
+
+These ranges correspond to the intended motion of the mechanism and help maintain both visual consistency and reliable simulation behavior.
 
 ---
 ## Credits
