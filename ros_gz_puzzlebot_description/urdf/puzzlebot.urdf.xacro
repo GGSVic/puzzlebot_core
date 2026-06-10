@@ -5,10 +5,11 @@
     <xacro:include filename="$(find ros_gz_puzzlebot_description)/urdf/xacros/gazebo_plugins.xacro" />
     <xacro:include filename="$(find ros_gz_puzzlebot_description)/urdf/xacros/geometric_primitives.xacro" />
     <xacro:include filename="$(find ros_gz_puzzlebot_description)/urdf/xacros/wheels.xacro" />
-
+    <xacro:include filename="$(find ros_gz_puzzlebot_description)/urdf/xacros/forklift.xacro"/>
 
     <!-- Get the current puzzlebot model -->
     <xacro:arg name="model" default="$(env PUZZLEBOT_MODEL)" />
+    <xacro:arg name="include_forklift" default="$(env INCLUDE_FORKLIFT)" />
 
     <!-- Chassis -->
     <link name="base_link" />
@@ -43,7 +44,7 @@
     <xacro:fixed_joint parent="chassis_link" child="caster_wheel_support" x="-0.095" z="-0.0025" />
 
     <!-- Differential Drive Controller -->
-    <xacro:diff_drive_controller />
+    <xacro:diff_drive_controller /> 
 
     <xacro:if value="${'$(arg model)' != 'drive'}">
         <!-- Camera-->
@@ -66,5 +67,15 @@
         <xacro:lidar_plugin />
     </xacro:if>
 
+    <xacro:if value="${'$(arg include_forklift)' == 'true'}">
+        <!-- Forklift (if required) -->
+        <xacro:forklift /> 
+        <xacro:fixed_joint parent="chassis_link" child="forklift_base" x="0.105" z="0.027123"/>
+    </xacro:if>
 
+    <gazebo reference="base_link">
+        <keyword>
+            <allow_auto_disable>false</allow_auto_disable>
+        </keyword>
+    </gazebo>
 </robot>

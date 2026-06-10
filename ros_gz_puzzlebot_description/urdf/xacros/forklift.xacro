@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- Forklift MACRO (highly recommended to NOT modify)-->
+
+    <xacro:macro name="forklift">
+
+        <!-- This macro defines the complete description for the forklift (links, joints, etc) -->
+
+        <!-- forklift_base link (use this to connect to the robot) -->
+        
+        <xacro:property name="base_mass" value="0.01"/>
+        <xacro:property name="width" value="0.0304"/>
+        <xacro:property name="depth" value="0.0804"/>
+        <xacro:property name="height" value="0.111"/>
+
+        <link name="forklift_base">
+            <xacro:collision_box width="${width}*2" depth="${depth}*2" height="${height}*2" z="0.0125" x="-0.006"/>
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}" mass="${base_mass}" z="0.0125" x="-0.006"/>
+            <xacro:mesh filename="package://ros_gz_puzzlebot_description/meshes/forklift/forklift_base.dae" />
+        </link>
+
+        <!-- fixed mast -->
+        
+        <xacro:property name="fixed_mast_mass" value="0.01"/>
+        <xacro:property name="width" value="0.015"/>
+        <xacro:property name="depth" value="0.082"/>
+        <xacro:property name="height" value="0.12"/>
+
+        <link name="fixed_mast">
+            <xacro:collision_box width="${width}" depth="${depth}" height="${height}"/>
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}" mass="${fixed_mast_mass}"/>
+            <xacro:mesh filename="package://ros_gz_puzzlebot_description/meshes/forklift/fixed_mast.dae"/>
+        </link>
+
+        <xacro:fixed_joint parent="forklift_base" child="fixed_mast" x="0.016039" z="0.01641"/>
+
+        <!-- inner mast -->
+
+        <xacro:property name="inner_mast_mass" value="0.01"/>
+        <xacro:property name="width" value="0.015"/>
+        <xacro:property name="depth" value="0.072"/>
+        <xacro:property name="height" value="0.10"/>
+
+        <link name="inner_mast">
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}" mass="${inner_mast_mass}"/>
+            <xacro:mesh filename="package://ros_gz_puzzlebot_description/meshes/forklift/inner_mast.dae"/>
+            <xacro:collision_box width="${width}" depth="${depth}" height="${height}"/>
+        </link>
+        
+        <joint name="inner_mast_joint" type="prismatic">
+            <parent link="fixed_mast"/>
+            <child link="inner_mast"/>
+            <origin xyz="0.003588 0 -0.010188" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit lower="-0.02" upper="0.08" effort="100.0" velocity="0.2"/>
+            <dynamics damping="0.0001" friction="0.0"/>
+        </joint>
+        
+
+        <!-- fork carriage -->        
+        <xacro:property name="fork_carriage_mass" value="0.01"/>
+        <xacro:property name="width" value="0.015"/>
+        <xacro:property name="depth" value="0.055"/>
+        <xacro:property name="height" value="0.010"/>
+
+        <link name="fork_carriage">
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}" mass="${fork_carriage_mass}"/>
+            <xacro:mesh filename="package://ros_gz_puzzlebot_description/meshes/forklift/fork_carriage.dae"/>
+            <xacro:collision_box width="${width}" depth="${depth}" height="${height}"/>
+        </link>
+        
+        <joint name="fork_carriage_joint" type="prismatic">
+            <parent link="inner_mast"/>
+            <child link="fork_carriage"/>
+            <origin xyz=".001692 0 -0.04386" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit lower="-0.02" upper="0.1" effort="100.0" velocity="0.2"/>
+            <dynamics damping="0.0001" friction="0.0"/>
+        </joint>
+
+
+        <!-- fork -->
+        <xacro:property name="fork_mass" value="0.01"/>
+        <xacro:property name="width" value="0.001"/>
+        <xacro:property name="depth" value="0.001"/>
+        <xacro:property name="height" value="0.001"/>
+
+        <link name="fork">
+            <xacro:inertial_box width="${width}" depth="${depth}" height="${height}" mass="${fork_mass}"/>
+            <xacro:mesh filename="package://ros_gz_puzzlebot_description/meshes/forklift/fork.dae" include_collision="true"/>\
+        </link>
+
+        <xacro:fixed_joint parent="fork_carriage" child="fork" x="0.008955"/>
+
+
+        <ros2_control name="ForkliftSystem" type="system">
+
+            <hardware>
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            </hardware>
+
+            <joint name="inner_mast_joint">
+
+                <command_interface name="position">
+                    <param name="min">0.0</param>
+                    <param name="max">0.06</param>
+                </command_interface>
+
+                <state_interface name="position">
+                    <param name="initial_value">0.0</param>
+                </state_interface>
+
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+
+            </joint>
+
+            <joint name="fork_carriage_joint">
+
+                <command_interface name="position">
+                    <param name="min">0.0</param>
+                    <param name="max">0.08</param>
+                </command_interface>
+
+                <state_interface name="position">
+                    <param name="initial_value">0.0</param>
+                </state_interface>
+
+                <state_interface name="velocity"/>
+                <state_interface name="effort"/>
+
+            </joint>
+
+        </ros2_control>
+        
+        <gazebo>
+          <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+
+                <robot_param>robot_description</robot_param>
+                <robot_param_node>puzzlebot_state_publisher</robot_param_node>
+
+                <parameters>
+                    $(find ros_gz_puzzlebot_description)/config/forklift_controllers.yaml
+                </parameters>
+            </plugin>
+        </gazebo>
+
+    </xacro:macro>
+
+
+</robot>

@@ -62,24 +62,6 @@ def generate_launch_description() -> LaunchDescription:
         condition=IfCondition(LaunchConfiguration("rviz")),
     )
 
-    # Build absolute path to bridge configuration file
-    bridge_config_path = PathJoinSubstitution(
-        [
-            FindPackageShare("ros_gz_puzzlebot_bringup"),
-            "config",
-            "full.yaml",        
-        ]
-    )
-
-    # Ros bridge 
-    ros_bridge = Node(
-        package="ros_gz_bridge", 
-        executable="parameter_bridge", 
-        name="bridge", 
-        parameters=[{"config_file" : bridge_config_path}],
-        output="screen"
-    )
-
     return LaunchDescription(
         [
             DeclareLaunchArgument(
@@ -95,7 +77,6 @@ def generate_launch_description() -> LaunchDescription:
                 choices=["true", "false"],
             ),
             robot_state_publisher_node,
-            rviz_node,
-            ros_bridge
+            rviz_node
         ]
     )
